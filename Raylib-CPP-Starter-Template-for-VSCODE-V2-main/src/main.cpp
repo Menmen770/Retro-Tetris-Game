@@ -121,7 +121,87 @@ int main () {
             fontSize = 24.0f;
             textSize = MeasureTextEx(font, "Press SPACE to Play", fontSize, 2);
             DrawTextEx(font, "Press SPACE to Play", {(500.0f - textSize.x) / 2.0f, 570.0f}, fontSize, 2, YELLOW); // Y=570
+            
+            // הוראה לצפייה בשיאים
+            fontSize = 18.0f;
+            textSize = MeasureTextEx(font, "Press CTRL or H for High Scores", fontSize, 2);
+            DrawTextEx(font, "Press CTRL or H for High Scores", {(500.0f - textSize.x) / 2.0f, 600.0f}, fontSize, 2, DARKGRAY); // Y=600
 
+        } else if (game.state == ENTER_NAME) {
+            
+            // --- מסך הזנת שם לאחר השגת שיא ---
+            float fontSize = 40.0f;
+            Vector2 textSize;
+            
+            // כותרת
+            textSize = MeasureTextEx(font, "NEW HIGH SCORE!", fontSize, 2);
+            DrawTextEx(font, "NEW HIGH SCORE!", {(500.0f - textSize.x) / 2.0f, 150.0f}, fontSize, 2, YELLOW);
+            
+            // הצגת הציון
+            char scoreText[50];
+            sprintf(scoreText, "Score: %d", game.lastScore);
+            fontSize = 35.0f;
+            textSize = MeasureTextEx(font, scoreText, fontSize, 2);
+            DrawTextEx(font, scoreText, {(500.0f - textSize.x) / 2.0f, 220.0f}, fontSize, 2, WHITE);
+            
+            // הנחיה
+            fontSize = 25.0f;
+            textSize = MeasureTextEx(font, "Enter Your Name:", fontSize, 2);
+            DrawTextEx(font, "Enter Your Name:", {(500.0f - textSize.x) / 2.0f, 300.0f}, fontSize, 2, WHITE);
+            
+            // תיבת טקסט לשם
+            DrawRectangleRounded({100, 350, 300, 60}, 0.3, 6, lightBlue);
+            
+            // הצגת השם שהוזן
+            fontSize = 35.0f;
+            const char* displayName = game.playerName.empty() ? "_" : game.playerName.c_str();
+            textSize = MeasureTextEx(font, displayName, fontSize, 2);
+            DrawTextEx(font, displayName, {250 - textSize.x / 2, 365}, fontSize, 2, WHITE);
+            
+            // הוראות
+            fontSize = 20.0f;
+            textSize = MeasureTextEx(font, "Press ENTER to confirm", fontSize, 2);
+            DrawTextEx(font, "Press ENTER to confirm", {(500.0f - textSize.x) / 2.0f, 480.0f}, fontSize, 2, LIGHTGRAY);
+            
+        } else if (game.state == HIGH_SCORES) {
+            
+            // --- מסך טבלת השיאים ---
+            float fontSize = 45.0f;
+            Vector2 textSize = MeasureTextEx(font, "HIGH SCORES", fontSize, 2);
+            DrawTextEx(font, "HIGH SCORES", {(500.0f - textSize.x) / 2.0f, 30.0f}, fontSize, 2, YELLOW);
+            
+            // קבלת רשימת השיאים
+            std::vector<ScoreEntry> topScores = game.scoreManager.GetTop10();
+            
+            float startY = 100.0f;
+            fontSize = 25.0f;
+            
+            // הצגת הטבלה
+            for (int i = 0; i < topScores.size() && i < 10; i++) {
+                char line[100];
+                sprintf(line, "%2d. %-12s %6d", i + 1, topScores[i].name.c_str(), topScores[i].score);
+                
+                // הדגשת הציון האחרון שנוסף
+                Color textColor = WHITE;
+                if (topScores[i].score == game.lastScore && topScores[i].name == game.playerName) {
+                    textColor = YELLOW;
+                }
+                
+                DrawTextEx(font, line, {50.0f, startY + i * 45.0f}, fontSize, 2, textColor);
+            }
+            
+            // הודעה אם אין שיאים
+            if (topScores.empty()) {
+                fontSize = 30.0f;
+                textSize = MeasureTextEx(font, "No scores yet!", fontSize, 2);
+                DrawTextEx(font, "No scores yet!", {(500.0f - textSize.x) / 2.0f, 300.0f}, fontSize, 2, LIGHTGRAY);
+            }
+            
+            // הוראות
+            fontSize = 24.0f;
+            textSize = MeasureTextEx(font, "Press SPACE to continue", fontSize, 2);
+            DrawTextEx(font, "Press SPACE to continue", {(500.0f - textSize.x) / 2.0f, 570.0f}, fontSize, 2, LIGHTGRAY);
+            
         } else if (game.state == PLAYING) {
             
             // --- ציור ממשק המשחק הרגיל ---

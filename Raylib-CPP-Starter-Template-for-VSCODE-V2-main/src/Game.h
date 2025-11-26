@@ -1,12 +1,15 @@
 #pragma once
 #include "Grid.h"
 #include "Blocks.cpp"
+#include "ScoreManager.h"
 #include <raylib.h>
 
 // 1. הגדרת מצבי המשחק
 enum GameState {
     LEVEL_SELECT, // מסך בחירת רמה
-    PLAYING       // משחק פעיל
+    PLAYING,      // משחק פעיל
+    ENTER_NAME,   // הזנת שם לאחר השגת שיא
+    HIGH_SCORES   // תצוגת טבלת השיאים
 };
 extern void ResetDropTimer();
 
@@ -43,6 +46,9 @@ public:
     Texture2D logoTexture;
     GameState state;  // <--- מצב המשחק הנוכחי
     int score;
+    ScoreManager scoreManager;
+    std::string playerName;
+    int lastScore; // שמירת הציון האחרון לאחר game over
     
     
 };

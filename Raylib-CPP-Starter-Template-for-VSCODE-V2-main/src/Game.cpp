@@ -31,6 +31,15 @@ void Game::LockBlock(){
     if (BlockFist() == false){
         GameOver = true;
         PlaySound(GameOverSound);
+        lastScore = score; // שמירת הציון לפני איפוס
+        
+        // בדיקה אם הציון נכנס לטופ 10
+        if (scoreManager.IsHighScore(score)) {
+            state = ENTER_NAME; // מעבר למסך הזנת שם
+            playerName = ""; // איפוס שם השחקן
+        } else {
+            state = HIGH_SCORES; // מעבר ישיר לטבלת השיאים
+        }
     }
     UpdateScore(0, 1);
     nextBlock = GetRandomBlock();
@@ -122,6 +131,9 @@ Game::Game()
     InitAudioDevice();
     clearSound = LoadSound("Sounds/clear.mp3");
     GameOverSound = LoadSound("Sounds/gameOver.mp3");
+    scoreManager = ScoreManager("highscores.txt");
+    playerName = "";
+    lastScore = 0;
 
 }
 
@@ -172,7 +184,7 @@ void Game::HandelInput(){
     // --- 1. טיפול במצב בחירת רמה ---
     if (state == LEVEL_SELECT) {
         if (keyPressed == KEY_UP) {
-            // הגבלת הרמה המקסימלית ל-5
+            // הגבלת הרמה המקסימלית ל-12
             currentLevel = std::min(12, currentLevel + 1); 
         } else if (keyPressed == KEY_DOWN) {
             // הגבלת הרמה המינימלית ל-1
@@ -181,20 +193,42 @@ void Game::HandelInput(){
             state = PLAYING; // מקש רווח מתחיל את המשחק
             Reset(); // איפוס הלוח והבלוקים
             ResetDropTimer();
+        } else if (keyPressed == KEY_LEFT_CONTROL || keyPressed == KEY_RIGHT_CONTROL || keyPressed == KEY_H) {
+            // CTRL או H פותח את טבלת השיאים
+            state = HIGH_SCORES;
         }
         return; // סיים את הפונקציה אם אנחנו בבחירת רמה
     }
 
-    // --- 2. טיפול בסוף משחק ---
-    if (GameOver && keyPressed != 0)
-    {
-        GameOver = false;
-        // לחיצה על מקש כלשהו בסוף משחק מחזירה למסך בחירת רמה
-        state = LEVEL_SELECT; 
+    // --- 2. טיפול במסך הזנת שם ---
+    if (state == ENTER_NAME) {
+        // טיפול בקלט טקסט - אותיות, מספרים, מקום
+        if (keyPressed >= 32 && keyPressed <= 125 && playerName.length() < 15) {
+            playerName += (char)keyPressed;
+        }
+        
+        // מחיקת תו אחרון
+        if (keyPressed == KEY_BACKSPACE && playerName.length() > 0) {
+            playerName.pop_back();
+        }
+        
+        // אישור השם ושמירה
+        if (keyPressed == KEY_ENTER && playerName.length() > 0) {
+            scoreManager.AddScore(playerName, lastScore);
+            state = HIGH_SCORES;
+        }
+        return;
+    }
+
+    // --- 3. טיפול במסך טבלת השיאים ---
+    if (state == HIGH_SCORES) {
+        if (keyPressed == KEY_SPACE || keyPressed == KEY_ENTER) {
+            state = LEVEL_SELECT; // חזרה לתפריט
+        }
         return;
     }
     
-    // --- 3. טיפול במשחק פעיל (PLAYING) ---
+    // --- 4. טיפול במשחק פעיל (PLAYING) ---
     switch (keyPressed)
     {
     case KEY_LEFT:
