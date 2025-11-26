@@ -1,7 +1,7 @@
 #include "Block.h"
 
 Block::Block(){
-    cellSize = 30;
+    cellSize = 33;
     rotationState = 0;
     colors = GetCellColors();
     rowOffset = 0;

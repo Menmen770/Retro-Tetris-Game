@@ -4,20 +4,26 @@
 #include "ScoreManager.h"
 #include <raylib.h>
 
-// 1. הגדרת מצבי המשחק
 enum GameState {
-    LEVEL_SELECT, // מסך בחירת רמה
-    PLAYING,      // משחק פעיל
-    ENTER_NAME,   // הזנת שם לאחר השגת שיא
-    HIGH_SCORES   // תצוגת טבלת השיאים
+    LEVEL_SELECT,
+    PLAYING,
+    GAME_OVER,
+    ENTER_NAME,
+    HIGH_SCORES
 };
+
 extern void ResetDropTimer();
 
-class Game{
+class Game {
 private:
     std::vector<Block> blocks;
     Block currentBlock;
     Block nextBlock;
+    Grid grid;
+    int totalLinesCleared;
+    Sound clearSound;
+    Sound gameOverSound;
+    
     bool IsBlockOutside();
     void RotateBlock();
     void LockBlock();
@@ -29,26 +35,21 @@ private:
     void MoveBlockLeft();
     void MoveBlockRight();
     void HardDropBlock();
-    Grid grid;
-    // 2. משתנים חדשים לניהול המצב והרמה:
-    int totalLinesCleared;
-    Sound clearSound;
-    Sound GameOverSound;
     
 public:
     Game();
     ~Game();
+    
     void Draw();
-    void HandelInput();
+    void HandleInput();
     void MoveBlockDown();
+    
     bool GameOver;
-    int currentLevel; // <--- הרמה הנוכחית (1-5)
-    Texture2D logoTexture;
-    GameState state;  // <--- מצב המשחק הנוכחי
+    int currentLevel;
     int score;
+    int lastScore;
+    Texture2D logoTexture;
+    GameState state;
     ScoreManager scoreManager;
     std::string playerName;
-    int lastScore; // שמירת הציון האחרון לאחר game over
-    
-    
 };

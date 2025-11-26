@@ -1,3 +1,30 @@
+# Executables
 *.exe
 *.dsym
+*.out
 main
+
+# Object files
+*.o
+*.obj
+
+# Debug files
+*.pdb
+*.ilk
+
+# VS Code settings (optional - remove if you want to commit)
+# .vscode/
+
+# Build directories
+build/
+bin/
+obj/
+
+# Release folder (create manually for distribution)
+Release/
+
+# Backup and temporary files
+*.bak
+*.swp
+*~
+.DS_Store

@@ -30,16 +30,9 @@ void Game::LockBlock(){
     currentBlock = nextBlock;
     if (BlockFist() == false){
         GameOver = true;
-        PlaySound(GameOverSound);
+        PlaySound(gameOverSound);
         lastScore = score; // שמירת הציון לפני איפוס
-        
-        // בדיקה אם הציון נכנס לטופ 10
-        if (scoreManager.IsHighScore(score)) {
-            state = ENTER_NAME; // מעבר למסך הזנת שם
-            playerName = ""; // איפוס שם השחקן
-        } else {
-            state = HIGH_SCORES; // מעבר ישיר לטבלת השיאים
-        }
+        state = GAME_OVER; // מעבר למסך Game Over
     }
     UpdateScore(0, 1);
     nextBlock = GetRandomBlock();
@@ -130,7 +123,7 @@ Game::Game()
     logoTexture = LoadTexture("resources/logo.png");
     InitAudioDevice();
     clearSound = LoadSound("Sounds/clear.mp3");
-    GameOverSound = LoadSound("Sounds/gameOver.mp3");
+    gameOverSound = LoadSound("Sounds/gameOver.mp3");
     scoreManager = ScoreManager("highscores.txt");
     playerName = "";
     lastScore = 0;
@@ -139,7 +132,7 @@ Game::Game()
 
 Game::~Game(){
     UnloadSound(clearSound);
-    UnloadSound(GameOverSound);
+    UnloadSound(gameOverSound);
     UnloadTexture(logoTexture); // משחרר את התמונה מהזיכרון
     CloseAudioDevice();
 }
@@ -160,25 +153,23 @@ std::vector<Block> Game::GetAllBlocks(){
 
 void Game::Draw(){
     grid.Draw();
-    currentBlock.Draw(11, 11);
+    currentBlock.Draw(12, 12);
     switch (nextBlock.id){
     case 3:
-        nextBlock.Draw(255, 290);
+        nextBlock.Draw(280.5f, 319);
         break;
 
     case 4:
-        nextBlock.Draw(255, 280);
+        nextBlock.Draw(280.5f, 308);
         break;
 
     default:
-        nextBlock.Draw(270, 270);
+        nextBlock.Draw(297, 297);
         break;
     }
 }
 
-// Game.cpp
-
-void Game::HandelInput(){
+void Game::HandleInput(){
     int keyPressed = GetKeyPressed();
     
     // --- 1. טיפול במצב בחירת רמה ---
@@ -200,7 +191,21 @@ void Game::HandelInput(){
         return; // סיים את הפונקציה אם אנחנו בבחירת רמה
     }
 
-    // --- 2. טיפול במסך הזנת שם ---
+    // --- 2. טיפול במסך Game Over ---
+    if (state == GAME_OVER) {
+        if (keyPressed == KEY_SPACE || keyPressed == KEY_ENTER) {
+            // בדיקה אם הציון נכנס לטופ 10
+            if (scoreManager.IsHighScore(lastScore)) {
+                state = ENTER_NAME; // מעבר למסך הזנת שם
+                playerName = ""; // איפוס שם השחקן
+            } else {
+                state = HIGH_SCORES; // מעבר ישיר לטבלת השיאים
+            }
+        }
+        return;
+    }
+
+    // --- 3. טיפול במסך הזנת שם ---
     if (state == ENTER_NAME) {
         // טיפול בקלט טקסט - אותיות, מספרים, מקום
         if (keyPressed >= 32 && keyPressed <= 125 && playerName.length() < 15) {
@@ -220,7 +225,7 @@ void Game::HandelInput(){
         return;
     }
 
-    // --- 3. טיפול במסך טבלת השיאים ---
+    // --- 4. טיפול במסך טבלת השיאים ---
     if (state == HIGH_SCORES) {
         if (keyPressed == KEY_SPACE || keyPressed == KEY_ENTER) {
             state = LEVEL_SELECT; // חזרה לתפריט
@@ -228,7 +233,7 @@ void Game::HandelInput(){
         return;
     }
     
-    // --- 4. טיפול במשחק פעיל (PLAYING) ---
+    // --- 5. טיפול במשחק פעיל (PLAYING) ---
     switch (keyPressed)
     {
     case KEY_LEFT:
@@ -312,4 +317,5 @@ void Game::Reset(){
     nextBlock = GetRandomBlock();
     score = 0;
     totalLinesCleared = 0; // <--- איפוס מונה השורות
+    GameOver = false; // <--- איפוס מצב Game Over
 }

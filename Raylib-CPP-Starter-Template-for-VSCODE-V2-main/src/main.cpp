@@ -50,7 +50,7 @@ double GetDropInterval(int level) {
 
 int main () {
     
-    InitWindow(500, 620, "Retro Tetris");
+    InitWindow(550, 682, "Retro Tetris");
     // טוען את התמונה מהקובץ (ודא שהנתיב "resources/logo.png" נכון)
     Image icon = LoadImage("resources/logo.png"); 
     
@@ -65,7 +65,7 @@ int main () {
 
     while (WindowShouldClose() == false)
     {
-        game.HandelInput();
+        game.HandleInput();
         
         if (game.state == PLAYING) {
             if (EvenTriger(GetDropInterval(game.currentLevel))){
@@ -82,104 +82,123 @@ int main () {
             // --- 1. ציור התמונה (לוגו) - למעלה ובגדול ---
             Rectangle sourceRect = { 0.0f, 0.0f, (float)game.logoTexture.width, (float)game.logoTexture.height };
             Rectangle destRect = { 
-                (500.0f - 450.0f) / 2.0f,  // X (ממורכז)
-                40.0f,                     // Y (למעלה)
-                450.0f,                    // רוחב (גדול)
-                300.0f                     // גובה (גדול)
+                (550.0f - 495.0f) / 2.0f,  // X (ממורכז)
+                44.0f,                     // Y (למעלה)
+                495.0f,                    // רוחב (גדול)
+                330.0f                     // גובה (גדול)
             };
             DrawTexturePro(game.logoTexture, sourceRect, destRect, {0,0}, 0.0f, WHITE);
             
             // --- 2. מיקום הטקסט (מתחת ללוגו, קטן וממורכז) ---
             
             // מיקום התחלה לטקסט, מתחת לתיבת התמונה
-            float textY = 40.0f + 300.0f + 10.0f; // Y=350 
+            float textY = 44.0f + 330.0f + 11.0f; // Y=385
 
             // שם המשחק (כותרת) - הוקטן וממורכז
-            float fontSize = 30.0f;
+            float fontSize = 33.0f;
             Vector2 textSize = MeasureTextEx(font, "RETRO TETRIS", fontSize, 2);
-            DrawTextEx(font, "RETRO TETRIS", {(500.0f - textSize.x) / 2.0f, textY}, fontSize, 2, WHITE);
+            DrawTextEx(font, "RETRO TETRIS", {(550.0f - textSize.x) / 2.0f, textY}, fontSize, 2, WHITE);
 
             // "Select Level" - הוקטן וממורכז
-            textY += 40.0f; // Y=390
-            fontSize = 30.0f;
+            textY += 44.0f; // Y=429
+            fontSize = 33.0f;
             textSize = MeasureTextEx(font, "Select Level", fontSize, 2);
-            DrawTextEx(font, "Select Level", {(500.0f - textSize.x) / 2.0f, textY}, fontSize, 2, WHITE);
+            DrawTextEx(font, "Select Level", {(550.0f - textSize.x) / 2.0f, textY}, fontSize, 2, WHITE);
             
             // "LEVEL %d" - ממורכז
-            textY += 40.0f; // Y=430
-            fontSize = 40.0f;
+            textY += 44.0f; // Y=473
+            fontSize = 44.0f;
             char levelText[10];
             sprintf(levelText, "LEVEL %d", game.currentLevel);
             textSize = MeasureTextEx(font, levelText, fontSize, 2);
-            DrawTextEx(font, levelText, {(500.0f - textSize.x) / 2.0f, textY}, fontSize, 2, WHITE);
+            DrawTextEx(font, levelText, {(550.0f - textSize.x) / 2.0f, textY}, fontSize, 2, WHITE);
 
             // הוראות (קרוב לתחתית המסך) - הוקטנו וממורכזות
-            fontSize = 20.0f;
+            fontSize = 22.0f;
             textSize = MeasureTextEx(font, "Use Up/Down to Select", fontSize, 2);
-            DrawTextEx(font, "Use Up/Down to Select", {(500.0f - textSize.x) / 2.0f, 540.0f}, fontSize, 2, LIGHTGRAY); // Y=540
+            DrawTextEx(font, "Use Up/Down to Select", {(550.0f - textSize.x) / 2.0f, 594.0f}, fontSize, 2, LIGHTGRAY);
             
-            fontSize = 24.0f;
+            fontSize = 26.4f;
             textSize = MeasureTextEx(font, "Press SPACE to Play", fontSize, 2);
-            DrawTextEx(font, "Press SPACE to Play", {(500.0f - textSize.x) / 2.0f, 570.0f}, fontSize, 2, YELLOW); // Y=570
+            DrawTextEx(font, "Press SPACE to Play", {(550.0f - textSize.x) / 2.0f, 627.0f}, fontSize, 2, YELLOW);
             
             // הוראה לצפייה בשיאים
-            fontSize = 18.0f;
+            fontSize = 19.8f;
             textSize = MeasureTextEx(font, "Press CTRL or H for High Scores", fontSize, 2);
-            DrawTextEx(font, "Press CTRL or H for High Scores", {(500.0f - textSize.x) / 2.0f, 600.0f}, fontSize, 2, DARKGRAY); // Y=600
+            DrawTextEx(font, "Press CTRL or H for High Scores", {(550.0f - textSize.x) / 2.0f, 660.0f}, fontSize, 2, DARKGRAY);
+
+        } else if (game.state == GAME_OVER) {
+            
+            // --- מסך Game Over ---
+            float fontSize = 66.0f;
+            Vector2 textSize = MeasureTextEx(font, "GAME OVER", fontSize, 2);
+            DrawTextEx(font, "GAME OVER", {(550.0f - textSize.x) / 2.0f, 220.0f}, fontSize, 2, red);
+            
+            // הצגת הציון הסופי
+            char scoreText[50];
+            sprintf(scoreText, "Final Score: %d", game.lastScore);
+            fontSize = 38.5f;
+            textSize = MeasureTextEx(font, scoreText, fontSize, 2);
+            DrawTextEx(font, scoreText, {(550.0f - textSize.x) / 2.0f, 330.0f}, fontSize, 2, WHITE);
+            
+            // הוראות
+            fontSize = 26.4f;
+            textSize = MeasureTextEx(font, "Press SPACE to continue", fontSize, 2);
+            DrawTextEx(font, "Press SPACE to continue", {(550.0f - textSize.x) / 2.0f, 440.0f}, fontSize, 2, LIGHTGRAY);
 
         } else if (game.state == ENTER_NAME) {
             
             // --- מסך הזנת שם לאחר השגת שיא ---
-            float fontSize = 40.0f;
+            float fontSize = 44.0f;
             Vector2 textSize;
             
             // כותרת
             textSize = MeasureTextEx(font, "NEW HIGH SCORE!", fontSize, 2);
-            DrawTextEx(font, "NEW HIGH SCORE!", {(500.0f - textSize.x) / 2.0f, 150.0f}, fontSize, 2, YELLOW);
+            DrawTextEx(font, "NEW HIGH SCORE!", {(550.0f - textSize.x) / 2.0f, 165.0f}, fontSize, 2, YELLOW);
             
             // הצגת הציון
             char scoreText[50];
             sprintf(scoreText, "Score: %d", game.lastScore);
-            fontSize = 35.0f;
+            fontSize = 38.5f;
             textSize = MeasureTextEx(font, scoreText, fontSize, 2);
-            DrawTextEx(font, scoreText, {(500.0f - textSize.x) / 2.0f, 220.0f}, fontSize, 2, WHITE);
+            DrawTextEx(font, scoreText, {(550.0f - textSize.x) / 2.0f, 242.0f}, fontSize, 2, WHITE);
             
             // הנחיה
-            fontSize = 25.0f;
+            fontSize = 27.5f;
             textSize = MeasureTextEx(font, "Enter Your Name:", fontSize, 2);
-            DrawTextEx(font, "Enter Your Name:", {(500.0f - textSize.x) / 2.0f, 300.0f}, fontSize, 2, WHITE);
+            DrawTextEx(font, "Enter Your Name:", {(550.0f - textSize.x) / 2.0f, 330.0f}, fontSize, 2, WHITE);
             
             // תיבת טקסט לשם
-            DrawRectangleRounded({100, 350, 300, 60}, 0.3, 6, lightBlue);
+            DrawRectangleRounded({110, 385, 330, 66}, 0.3, 6, lightBlue);
             
             // הצגת השם שהוזן
-            fontSize = 35.0f;
+            fontSize = 38.5f;
             const char* displayName = game.playerName.empty() ? "_" : game.playerName.c_str();
             textSize = MeasureTextEx(font, displayName, fontSize, 2);
-            DrawTextEx(font, displayName, {250 - textSize.x / 2, 365}, fontSize, 2, WHITE);
+            DrawTextEx(font, displayName, {275 - textSize.x / 2, 401.5f}, fontSize, 2, WHITE);
             
             // הוראות
-            fontSize = 20.0f;
+            fontSize = 22.0f;
             textSize = MeasureTextEx(font, "Press ENTER to confirm", fontSize, 2);
-            DrawTextEx(font, "Press ENTER to confirm", {(500.0f - textSize.x) / 2.0f, 480.0f}, fontSize, 2, LIGHTGRAY);
+            DrawTextEx(font, "Press ENTER to confirm", {(550.0f - textSize.x) / 2.0f, 528.0f}, fontSize, 2, LIGHTGRAY);
             
         } else if (game.state == HIGH_SCORES) {
             
             // --- מסך טבלת השיאים ---
-            float fontSize = 45.0f;
+            float fontSize = 49.5f;
             Vector2 textSize = MeasureTextEx(font, "HIGH SCORES", fontSize, 2);
-            DrawTextEx(font, "HIGH SCORES", {(500.0f - textSize.x) / 2.0f, 30.0f}, fontSize, 2, YELLOW);
+            DrawTextEx(font, "HIGH SCORES", {(550.0f - textSize.x) / 2.0f, 33.0f}, fontSize, 2, YELLOW);
             
             // קבלת רשימת השיאים
             std::vector<ScoreEntry> topScores = game.scoreManager.GetTop10();
             
-            float startY = 100.0f;
-            fontSize = 25.0f;
+            float startY = 110.0f;
+            fontSize = 27.5f;
             
             // הצגת הטבלה
-            for (int i = 0; i < topScores.size() && i < 10; i++) {
+            for (size_t i = 0; i < topScores.size() && i < 10; i++) {
                 char line[100];
-                sprintf(line, "%2d. %-12s %6d", i + 1, topScores[i].name.c_str(), topScores[i].score);
+                sprintf(line, "%2d. %-12s %6d", (int)(i + 1), topScores[i].name.c_str(), topScores[i].score);
                 
                 // הדגשת הציון האחרון שנוסף
                 Color textColor = WHITE;
@@ -187,44 +206,39 @@ int main () {
                     textColor = YELLOW;
                 }
                 
-                DrawTextEx(font, line, {50.0f, startY + i * 45.0f}, fontSize, 2, textColor);
+                DrawTextEx(font, line, {55.0f, startY + i * 49.5f}, fontSize, 2, textColor);
             }
             
             // הודעה אם אין שיאים
             if (topScores.empty()) {
-                fontSize = 30.0f;
+                fontSize = 33.0f;
                 textSize = MeasureTextEx(font, "No scores yet!", fontSize, 2);
-                DrawTextEx(font, "No scores yet!", {(500.0f - textSize.x) / 2.0f, 300.0f}, fontSize, 2, LIGHTGRAY);
+                DrawTextEx(font, "No scores yet!", {(550.0f - textSize.x) / 2.0f, 330.0f}, fontSize, 2, LIGHTGRAY);
             }
             
             // הוראות
-            fontSize = 24.0f;
+            fontSize = 26.4f;
             textSize = MeasureTextEx(font, "Press SPACE to continue", fontSize, 2);
-            DrawTextEx(font, "Press SPACE to continue", {(500.0f - textSize.x) / 2.0f, 570.0f}, fontSize, 2, LIGHTGRAY);
+            DrawTextEx(font, "Press SPACE to continue", {(550.0f - textSize.x) / 2.0f, 627.0f}, fontSize, 2, LIGHTGRAY);
             
         } else if (game.state == PLAYING) {
             
             // --- ציור ממשק המשחק הרגיל ---
-            DrawTextEx(font, "Score", {365, 15}, 38, 2, WHITE);
-            DrawTextEx(font, "Next", {370, 175}, 38, 2, WHITE);
+            DrawTextEx(font, "Score", {401.5f, 16.5f}, 41.8f, 2, WHITE);
+            DrawTextEx(font, "Next", {407.0f, 192.5f}, 41.8f, 2, WHITE);
             
             char levelDisplay[15];
             sprintf(levelDisplay, "Level %d", game.currentLevel);
-            DrawTextEx(font, levelDisplay, {360, 400}, 24, 2, WHITE); 
+            DrawTextEx(font, levelDisplay, {396.0f, 440.0f}, 26.4f, 2, WHITE); 
 
-            if(game.GameOver){
-                DrawTextEx(font, "Game", {360, 450}, 50, 2, red);
-                DrawTextEx(font, "Over", {360, 500}, 50, 2, red);
-            }
-            
-            DrawRectangleRounded({320, 55, 170, 60}, 0.3, 6, lightBlue);
+            DrawRectangleRounded({352, 60.5f, 187, 66}, 0.3, 6, lightBlue);
             
             char scoreText[10];
             sprintf(scoreText, "%d", game.score);
-            Vector2 textSize = MeasureTextEx(font, scoreText, 38, 2);
+            Vector2 textSize = MeasureTextEx(font, scoreText, 41.8f, 2);
 
-            DrawTextEx(font, scoreText, {320 + (170 - textSize.x)/2, 65}, 38, 2, WHITE);
-            DrawRectangleRounded({320, 215, 170, 180}, 0.3, 6, lightBlue);
+            DrawTextEx(font, scoreText, {352 + (187 - textSize.x)/2, 71.5f}, 41.8f, 2, WHITE);
+            DrawRectangleRounded({352, 236.5f, 187, 198}, 0.3, 6, lightBlue);
             
             game.Draw();
         }

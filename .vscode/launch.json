@@ -5,10 +5,10 @@
       "name": "Debug",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/${fileBasenameNoExtension}",
+      "program": "${workspaceFolder}/Raylib-CPP-Starter-Template-for-VSCODE-V2-main/main.exe",
       "args": [],
       "stopAtEntry": false,
-      "cwd": "${workspaceFolder}",
+      "cwd": "${workspaceFolder}/Raylib-CPP-Starter-Template-for-VSCODE-V2-main",
       "environment": [],
       "externalConsole": false,
       "MIMode": "gdb",
@@ -20,7 +20,7 @@
         }
       ],
       "windows": {
-        "program": "${workspaceFolder}/${fileBasenameNoExtension}.exe",
+        "program": "${workspaceFolder}/Raylib-CPP-Starter-Template-for-VSCODE-V2-main/main.exe",
         "miDebuggerPath": "C:/raylib/w64devkit/bin/gdb.exe"
       },
       "osx": {
@@ -37,13 +37,13 @@
       "request": "launch",
       "args": [],
       "stopAtEntry": false,
-      "cwd": "${workspaceFolder}",
+      "cwd": "${workspaceFolder}/Raylib-CPP-Starter-Template-for-VSCODE-V2-main",
       "environment": [],
       "externalConsole": false,
-      "program": "${workspaceFolder}/${fileBasenameNoExtension}",
+      "program": "${workspaceFolder}/Raylib-CPP-Starter-Template-for-VSCODE-V2-main/main.exe",
       "MIMode": "gdb",
       "windows": {
-        "program": "${workspaceFolder}/${fileBasenameNoExtension}.exe",
+        "program": "${workspaceFolder}/Raylib-CPP-Starter-Template-for-VSCODE-V2-main/main.exe",
         "miDebuggerPath": "C:/raylib/w64devkit/bin/gdb.exe"
       },
       "osx": {
