@@ -1,7 +1,7 @@
 # 🎮 Retro Tetris
 
 <p align="center">
-  <img src="resources/gameplay.png" alt="Tetris Gameplay" width="600">
+  <img src="Raylib-CPP-Starter-Template-for-VSCODE-V2-main/resources/gameplay.png" alt="Tetris Gameplay" width="600">
 </p>
 
 A modern implementation of the classic **Tetris** game built with **C++** and [Raylib](https://www.raylib.com/).
